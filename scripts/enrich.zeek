@@ -67,6 +67,7 @@ event connection_state_remove(c: connection)
         return;
     }
 
+    # If the IP is in the list, update the following logs.
     if (orig_local && orig in hosts_data) {
         local data = hosts_data[orig];
         Known::add_name_annotation(orig, data.hostname, set(data.source));
@@ -74,10 +75,12 @@ event connection_state_remove(c: connection)
         Known::add_domain_annotation(orig, data.machine_domain, set(data.source));
         Known::get_host_details(orig)$endpoint = endpoint;
     }
+    # If the IP is not in the list, add the field to flag it as unknown.
     if (orig_local && orig !in host_data) {
       #hosts(orig, )
     }
 
+    # If the IP is in the list, update the following logs.
     if (resp_local && resp in hosts_data) {
         local data = hosts_data[resp];
         Known::add_name_annotation(resp, data.hostname, set(data.source));
@@ -85,6 +88,7 @@ event connection_state_remove(c: connection)
         Known::add_domain_annotation(resp, data.machine_domain, set(data.source));
         Known::get_host_details(resp)$endpoint = endpoint;
     }
+    # If the IP is not in the list, add the field to flag it as unknown.
     if (resp_local && resp !in host_data) {
       #hosts(resp, )
     }
