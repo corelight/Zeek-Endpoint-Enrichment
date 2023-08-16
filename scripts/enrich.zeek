@@ -41,51 +41,6 @@ event zeek_init() {
     ]);
 }
 
-## known_names (Hostname only)
-redef record NameDetails += {
-	counter: count &log &default=0;
-};
-
-hook add_name_details(h: NameDetails, d: NameDetails)
-	{
-	h$counter += d$counter;
-	}
-
-## known_devices (MAC address only)
-redef record DeviceDetails += {
-	counter: count &log &default=0;
-};
-
-hook add_device_details(h: DeviceDetails, d: DeviceDetails)
-	{
-	h$counter += d$counter;
-	}
-
-## known_domains (Domain only)
-redef record DomainDetails += {
-	counter: count &log &default=0;
-};
-
-hook add_domain_details(h: DomainDetails, d: DomainDetails)
-	{
-	h$counter += d$counter;
-	}
-
-## known_hosts
-redef record HostDetails += {
-	counter: count &log &default=0;
-  endpoint: Val &log &optional;
-};
-
-hook add_host_details(h: HostDetails, d: HostDetails)
-	{
-	h$counter += d$counter;
-	}
-
-
-
-
-
 event connection_state_remove(c: connection)
 {
     local orig = c$id$orig_h;
