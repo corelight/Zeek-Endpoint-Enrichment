@@ -41,6 +41,20 @@ event zeek_init() {
     ]);
 }
 
+## known_hosts
+redef record HostDetails += {
+  endpoint: Val &log &optional;
+};
+
+hook add_host_details(h: HostDetails, d: HostDetails)
+	{
+    #d is from worker
+    #h is the internal table
+    if (h$host_ip == d$host_ip)
+      h$endpoint = d$endpoint;
+	}
+
+
 event connection_state_remove(c: connection)
 {
     local orig = c$id$orig_h;
@@ -55,17 +69,24 @@ event connection_state_remove(c: connection)
 
     if (orig_local && orig in hosts_data) {
         local data = hosts_data[orig];
-        names(orig, data.hostname, data.source);
-        devices(orig, data.mac, data.source)
-        domains(orig, data.machine_domain, data.source)
-        #hosts(orig, data.)
+        Known::add_name_annotation(orig, data.hostname, set(data.source));
+        Known::add_device_annotation(orig, data.mac, set(data.source));
+        Known::add_domain_annotation(orig, data.machine_domain, set(data.source));
+        Known::get_host_details(orig)$endpoint = endpoint;
     }
+    if (orig_local && orig !in host_data) {
+      #hosts(orig, )
+    }
+
     if (resp_local && resp in hosts_data) {
         local data = hosts_data[resp];
-        names(resp, data.hostname, data.source);
-        devices(resp, data.mac, data.source)
-        domains(resp, data.machine_domain, data.source)
-        #hosts(resp, data.)
+        Known::add_name_annotation(resp, data.hostname, set(data.source));
+        Known::add_device_annotation(resp, data.mac, set(data.source));
+        Known::add_domain_annotation(resp, data.machine_domain, set(data.source));
+        Known::get_host_details(resp)$endpoint = endpoint;
+    }
+    if (resp_local && resp !in host_data) {
+      #hosts(resp, )
     }
 
 }
