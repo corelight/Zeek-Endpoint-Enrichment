@@ -21,7 +21,7 @@ type Val: record {
     hostname: string;
     ## The machine domain of the endpoint host.
     machine_domain: string;
-}
+};
 
 global hosts_data: table[addr] of Val = table();
 
