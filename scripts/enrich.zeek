@@ -85,7 +85,7 @@ event connection_state_remove(c: connection) &priority=-5
         knownEndpoint(orig);
     }
     # If the IP is not in the list, add the field to flag it as unknown.
-    if (orig_local && orig !in host_data) {
+    if (orig_local && orig !in hosts_data) {
         unknownEndpoint(orig);
     }
 
@@ -94,7 +94,7 @@ event connection_state_remove(c: connection) &priority=-5
         knownEndpoint(resp);
     }
     # If the IP is not in the list, add the field to flag it as unknown.
-    if (resp_local && resp !in host_data) {
+    if (resp_local && resp !in hosts_data) {
         unknownEndpoint(resp);
     }
 
