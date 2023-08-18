@@ -54,15 +54,15 @@ hook add_host_details(h: HostDetails, d: HostDetails)
 # update logs
 function knownEndpoint (ip: addr) {
     local data = hosts_data[ip];
-    Known::add_name_annotation(ip, data.hostname, set(data.source));
-    Known::add_device_annotation(ip, data.mac, set(data.source));
-    # Known::get_device_details(ip, data.mac)$protocols=set(data.source);
-    Known::add_domain_annotation(ip, data.machine_domain, set(data.source));
+    Known::add_name_annotation(ip, data$hostname, set(data$source));
+    Known::add_device_annotation(ip, data$mac, set(data$source));
+    # Known::get_device_details(ip, data$mac)$protocols=set(data.source);
+    Known::add_domain_annotation(ip, data$machine_domain, set(data$source));
     Known::get_host_details(ip)$endpoint = endpoint;
 }
 function unknownEndpoint (ip: addr) {
     local data = host_data;
-    data.status="unknown"
+    data$status="unknown"
     Known::get_host_details(ip)$endpoint = endpoint;
 }
 
