@@ -58,12 +58,12 @@ function knownEndpoint (ip: addr) {
     Known::add_device_annotation(ip, data$mac, set(data$source));
     # Known::get_device_details(ip, data$mac)$protocols=set(data.source);
     Known::add_domain_annotation(ip, data$machine_domain, set(data$source));
-    Known::get_host_details(ip)$endpoint = endpoint;
+    Known::get_host_details(ip)$endpoint = data;
 }
 function unknownEndpoint (ip: addr) {
     local data = host_data[];
     data$status="unknown"
-    Known::get_host_details(ip)$endpoint = endpoint;
+    Known::get_host_details(ip)$endpoint = data;
 }
 
 # priority of -5 to make sure the Known-entities creates an entry first
