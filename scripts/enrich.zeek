@@ -37,11 +37,11 @@ event zeek_init() {
 }
 
 ## known_hosts
-redef record HostDetails += {
+redef record Known::HostDetails += {
   endpoint: Val &log &optional;
 };
 
-hook add_host_details(h: HostDetails, d: HostDetails)
+hook add_host_details(h: Known::HostDetails, d: Known::HostDetails)
 	{
     #d is from worker
     #h is the internal table
@@ -61,7 +61,7 @@ function knownEndpoint (ip: addr) {
     Known::get_host_details(ip)$endpoint = endpoint;
 }
 function unknownEndpoint (ip: addr) {
-    local data = host_data;
+    local data = host_data[];
     data$status="unknown"
     Known::get_host_details(ip)$endpoint = endpoint;
 }
