@@ -1,8 +1,3 @@
-@load ./names
-@load ./devices
-@load ./domains
-@load ./hosts
-
 module EndpointEnrichment;
 
 type Idx: record {
