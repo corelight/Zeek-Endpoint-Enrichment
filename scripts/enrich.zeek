@@ -16,11 +16,11 @@ type Val: record {
     ## The source of the endpoint information.
     source: string &log &optional;
     ## The MAC address of the endpoint host.
-    mac: string;
+    mac: string &optional;
     ## The hostname of the vulnerable host.
-    hostname: string;
+    hostname: string &optional;
     ## The machine domain of the endpoint host.
-    machine_domain: string;
+    machine_domain: string &optional;
 };
 
 global hosts_data: table[addr] of Val = table();
