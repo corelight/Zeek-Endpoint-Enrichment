@@ -55,7 +55,17 @@ hook add_host_details(h: HostDetails, d: HostDetails)
 	}
 
 
-event connection_state_remove(c: connection)
+
+# update logs
+function knownEndpoint (ip: addr, data: hosts_data) {
+        Known::add_name_annotation(ip, data.hostname, set(data.source));
+        Known::add_device_annotation(ip, data.mac, set(data.source));
+        Known::add_domain_annotation(ip, data.machine_domain, set(data.source));
+        Known::get_host_details(ip)$endpoint = endpoint;
+}
+
+# priority of -5 to make sure the Known-entities creates an entry first
+event connection_state_remove(c: connection) &priority=-5
 {
     local orig = c$id$orig_h;
     local resp = c$id$resp_h;
@@ -70,10 +80,7 @@ event connection_state_remove(c: connection)
     # If the IP is in the list, update the following logs.
     if (orig_local && orig in hosts_data) {
         local data = hosts_data[orig];
-        Known::add_name_annotation(orig, data.hostname, set(data.source));
-        Known::add_device_annotation(orig, data.mac, set(data.source));
-        Known::add_domain_annotation(orig, data.machine_domain, set(data.source));
-        Known::get_host_details(orig)$endpoint = endpoint;
+        knownEndpoint(orig, data);
     }
     # If the IP is not in the list, add the field to flag it as unknown.
     if (orig_local && orig !in host_data) {
@@ -83,10 +90,7 @@ event connection_state_remove(c: connection)
     # If the IP is in the list, update the following logs.
     if (resp_local && resp in hosts_data) {
         local data = hosts_data[resp];
-        Known::add_name_annotation(resp, data.hostname, set(data.source));
-        Known::add_device_annotation(resp, data.mac, set(data.source));
-        Known::add_domain_annotation(resp, data.machine_domain, set(data.source));
-        Known::get_host_details(resp)$endpoint = endpoint;
+        knownEndpoint(resp, data);
     }
     # If the IP is not in the list, add the field to flag it as unknown.
     if (resp_local && resp !in host_data) {
