@@ -41,13 +41,13 @@ redef record Known::HostDetails += {
   endpoint: Val &log &optional;
 };
 
-hook Known::add_host_details(h: Known::HostDetails, d: Known::HostDetails)
-	{
+hook Known::add_host_details(h: Known::HostDetails, d: Known::HostDetails){
     #d is from worker
     #h is the internal table
-    if (h$host_ip == d$host_ip)
-      h$endpoint = d$endpoint;
-	}
+    if (h$host_ip == d$host_ip){
+        h$endpoint = d$endpoint;
+    }
+}
 
 
 
