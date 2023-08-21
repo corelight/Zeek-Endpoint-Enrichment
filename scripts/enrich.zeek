@@ -54,6 +54,7 @@ hook Known::add_host_details(h: Known::HostDetails, d: Known::HostDetails){
 # update logs
 function knownEndpoint (ip: addr) {
     local data = hosts_data[ip];
+    print data;
     if ( data ?$ hostname) {
         Known::add_name_annotation(ip, data$hostname, set(data$source));
     }
