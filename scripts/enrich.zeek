@@ -29,7 +29,6 @@ global hosts_data: table[addr] of Val = table();
 # event entry(description: Input::TableDescription, tpe: Input::Event,
 #             left: Idx, right: Val) {
 #     # do something here...
-#     print fmt("%s = %s", left, right);
 #     Reporter::info (fmt("%s = %s", left, right));
 # }
 
@@ -63,17 +62,24 @@ function knownEndpoint (ip: addr) {
     local data = hosts_data[ip];
     # Reporter::info (cat(data));
     if ( data ?$ hostname) {
+        # add source to protocol field
         Known::get_name_details(ip, data$hostname)$protocols=set(data$source);
+        # add source to annotation field
         Known::add_name_annotation(ip, data$hostname, set(data$source));
     }
     if ( data ?$ mac) {
+        # add source to protocol field
         Known::get_device_details(ip, data$mac)$protocols=set(data$source);
+        # add source to annotation field
         Known::add_device_annotation(ip, data$mac, set(data$source));
     }
     if ( data ?$ machine_domain) {
+        # add source to protocol field
         Known::get_domain_details(ip, data$machine_domain)$protocols=set(data$source);
+        # add source to annotation field
         Known::add_domain_annotation(ip, data$machine_domain, set(data$source));
     }
+    # add new fields to hosts log
     Known::get_host_details(ip)$endpoint = data;
 }
 function unknownEndpoint (ip: addr) {
