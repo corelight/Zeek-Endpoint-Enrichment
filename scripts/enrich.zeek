@@ -54,14 +54,14 @@ hook Known::add_host_details(h: Known::HostDetails, d: Known::HostDetails)
 # update logs
 function knownEndpoint (ip: addr) {
     local data = hosts_data[ip];
-    if data$hostname ?$ {
+    if ( data ?$ hostname) {
         Known::add_name_annotation(ip, data$hostname, set(data$source));
     }
-    if data$mac ?$ {
+    if ( data ?$ mac) {
         Known::add_device_annotation(ip, data$mac, set(data$source));
         # Known::get_device_details(ip, data$mac)$protocols=set(data.source);
     }
-    if data$machine_domain ?$ {
+    if ( data ?$ machine_domain) {
         Known::add_domain_annotation(ip, data$machine_domain, set(data$source));
     }
     Known::get_host_details(ip)$endpoint = data;
