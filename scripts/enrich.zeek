@@ -40,7 +40,7 @@ event zeek_init() {
         $idx=Idx,
         $val=Val,
         $destination=hosts_data,
-        $mode=Input::REREAD,
+        $mode=Input::REREAD
         # $ev=entry
     ]);
 }
