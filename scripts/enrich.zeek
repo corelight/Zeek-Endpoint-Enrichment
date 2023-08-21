@@ -83,10 +83,8 @@ function knownEndpoint (ip: addr) {
     Known::get_host_details(ip)$endpoint = data;
 }
 function unknownEndpoint (ip: addr) {
-    return;
-    # local data = Val;
-    # data$status="unknown"
-    # Known::get_host_details(ip)$endpoint = data;
+    local data: Val = [$status = "unknown", $source = "x"];
+    Known::get_host_details(ip)$endpoint = data;
 }
 
 # priority of -5 to make sure the Known-entities creates an entry first
