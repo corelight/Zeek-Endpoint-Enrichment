@@ -8,13 +8,13 @@ type Val: record {
     ## The description of the endpoint.
     desc: string &log &optional;
     ## The status of the endpoint host.
-    status: string &log &optional;
+    status: string &log;
     ## The unique identifier, assigned by the source, of the endpoint host.
     host_uid: string &log &optional;
     ## The Operating System version of the endpoint host.
     os_version: string &log &optional;
     ## The source of the endpoint information.
-    source: string &log &optional;
+    source: string &log;
     ## The MAC address of the endpoint host.
     mac: string &optional;
     ## The hostname of the vulnerable host.
@@ -25,6 +25,14 @@ type Val: record {
 
 global hosts_data: table[addr] of Val = table();
 
+
+# event entry(description: Input::TableDescription, tpe: Input::Event,
+#             left: Idx, right: Val) {
+#     # do something here...
+#     print fmt("%s = %s", left, right);
+#     Reporter::info (fmt("%s = %s", left, right));
+# }
+
 event zeek_init() {
     Input::add_table([
         $source="hosts_data.tsv",
@@ -32,7 +40,8 @@ event zeek_init() {
         $idx=Idx,
         $val=Val,
         $destination=hosts_data,
-        $mode=Input::REREAD
+        $mode=Input::REREAD,
+        # $ev=entry
     ]);
 }
 
@@ -49,12 +58,10 @@ hook Known::add_host_details(h: Known::HostDetails, d: Known::HostDetails){
     }
 }
 
-
-
 # update logs
 function knownEndpoint (ip: addr) {
     local data = hosts_data[ip];
-    print data;
+    # Reporter::info (cat(data));
     if ( data ?$ hostname) {
         Known::add_name_annotation(ip, data$hostname, set(data$source));
     }
