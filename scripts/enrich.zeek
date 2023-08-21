@@ -63,13 +63,15 @@ function knownEndpoint (ip: addr) {
     local data = hosts_data[ip];
     # Reporter::info (cat(data));
     if ( data ?$ hostname) {
+        Known::get_device_details(ip, data$hostname)$protocols=set(data$source);
         Known::add_name_annotation(ip, data$hostname, set(data$source));
     }
     if ( data ?$ mac) {
+        Known::get_device_details(ip, data$mac)$protocols=set(data$source);
         Known::add_device_annotation(ip, data$mac, set(data$source));
-        # Known::get_device_details(ip, data$mac)$protocols=set(data.source);
     }
     if ( data ?$ machine_domain) {
+        Known::get_device_details(ip, data$machine_domain)$protocols=set(data$source);
         Known::add_domain_annotation(ip, data$machine_domain, set(data$source));
     }
     Known::get_host_details(ip)$endpoint = data;
