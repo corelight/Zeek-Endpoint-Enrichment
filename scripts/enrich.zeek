@@ -44,7 +44,9 @@ redef record Known::HostDetails += {
 hook Known::add_host_details(h: Known::HostDetails, d: Known::HostDetails){
     #d is from worker
     #h is the internal table
-    h$endpoint = d$endpoint;
+    if (d ?$ endpoint){
+        h$endpoint = d$endpoint;
+    }
 }
 
 
