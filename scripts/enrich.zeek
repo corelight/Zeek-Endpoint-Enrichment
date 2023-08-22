@@ -24,7 +24,7 @@ type Val: record {
 };
 
 global hosts_data: table[addr] of Val = table();
-
+# source to use for all unknown IPs
 global unknownSource: string;
 
 # event entry(description: Input::TableDescription, tpe: Input::Event,
