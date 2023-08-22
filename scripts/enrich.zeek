@@ -98,28 +98,27 @@ event connection_state_remove(c: connection) &priority=-5
     local orig_local = c$conn?$local_orig;
     local resp_local = c$conn?$local_resp;
 
-    if (!orig_local && !resp_local) {
+    if ( !orig_local && !resp_local ) {
         return;
     }
 
-    # If the IP is in the list, update the following logs.
-    if (orig_local && orig in hosts_data) {
-        knownEndpoint(orig);
+    # If the orig IP is local, check the list, update the following logs.
+    if ( orig_local ) {
+        # If it's in the list, update the fields, else flag it as unknown
+        if ( orig in hosts_data ) {
+            knownEndpoint(orig);
+        } else {
+            unknownEndpoint(orig);
+        }
     }
 
-    # If the IP is not in the list, add the field to flag it as unknown.
-    if (orig_local && orig !in hosts_data) {
-        unknownEndpoint(orig);
+    # If the resp IP is local, check the list, update the following logs.
+    if ( resp_local ) {
+        # If it's in the list, update the fields, else flag it as unknown
+        if ( resp in hosts_data ) {
+            knownEndpoint(resp);
+        } else {
+            unknownEndpoint(resp);
+        }
     }
-
-    # If the IP is in the list, update the following logs.
-    if (resp_local && resp in hosts_data) {
-        knownEndpoint(resp);
-    }
-
-    # If the IP is not in the list, add the field to flag it as unknown.
-    if (resp_local && resp !in hosts_data) {
-        unknownEndpoint(resp);
-    }
-
 }
