@@ -27,12 +27,6 @@ global hosts_data: table[addr] of Val = table();
 # source to use for all unknown IPs
 global unknownSource: string;
 
-# event entry(description: Input::TableDescription, tpe: Input::Event,
-#             left: Idx, right: Val) {
-#     # do something here...
-#     Reporter::info (fmt("%s = %s", left, right));
-# }
-
 event zeek_init() {
     Input::add_table([
         $source="hosts_data.tsv",
@@ -41,7 +35,6 @@ event zeek_init() {
         $val=Val,
         $destination=hosts_data,
         $mode=Input::REREAD
-        # $ev=entry
     ]);
 }
 
