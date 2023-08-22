@@ -25,6 +25,7 @@ type Val: record {
 
 global hosts_data: table[addr] of Val = table();
 
+global unknownSource: string;
 
 # event entry(description: Input::TableDescription, tpe: Input::Event,
 #             left: Idx, right: Val) {
@@ -42,6 +43,14 @@ event zeek_init() {
         $mode=Input::REREAD
         # $ev=entry
     ]);
+}
+
+#update unknownSource each time the input file is loaded.
+event Input::end_of_data(name: string, source: string) {
+    for ( _, val in hosts_data ) {
+        unknownSource = val$source;
+        break;
+    }
 }
 
 ## known_hosts
@@ -83,7 +92,7 @@ function knownEndpoint (ip: addr) {
     Known::get_host_details(ip)$endpoint = data;
 }
 function unknownEndpoint (ip: addr) {
-    local data: Val = [$status = "unknown", $source = "x"];
+    local data: Val = [$status = "unknown", $source = unknownSource];
     Known::get_host_details(ip)$endpoint = data;
 }
 
