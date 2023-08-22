@@ -95,8 +95,8 @@ event connection_state_remove(c: connection) &priority=-5
     local orig = c$id$orig_h;
     local resp = c$id$resp_h;
 
-    local orig_local = Site::is_local_addr(orig);
-    local resp_local = Site::is_local_addr(resp);
+    local orig_local = c$conn?$local_orig;
+    local resp_local = c$conn?$local_resp;
 
     if (!orig_local && !resp_local) {
         return;
@@ -106,6 +106,7 @@ event connection_state_remove(c: connection) &priority=-5
     if (orig_local && orig in hosts_data) {
         knownEndpoint(orig);
     }
+
     # If the IP is not in the list, add the field to flag it as unknown.
     if (orig_local && orig !in hosts_data) {
         unknownEndpoint(orig);
@@ -115,6 +116,7 @@ event connection_state_remove(c: connection) &priority=-5
     if (resp_local && resp in hosts_data) {
         knownEndpoint(resp);
     }
+
     # If the IP is not in the list, add the field to flag it as unknown.
     if (resp_local && resp !in hosts_data) {
         unknownEndpoint(resp);
