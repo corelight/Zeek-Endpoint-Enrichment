@@ -27,12 +27,6 @@ global hosts_data: table[addr] of Val = table();
 # source to use for all unknown IPs
 global unknownSource: string;
 
-# event entry(description: Input::TableDescription, tpe: Input::Event,
-#             left: Idx, right: Val) {
-#     # do something here...
-#     Reporter::info (fmt("%s = %s", left, right));
-# }
-
 event zeek_init() {
     Input::add_table([
         $source="hosts_data.tsv",
@@ -41,7 +35,6 @@ event zeek_init() {
         $val=Val,
         $destination=hosts_data,
         $mode=Input::REREAD
-        # $ev=entry
     ]);
 }
 
@@ -73,20 +66,20 @@ function knownEndpoint (ip: addr) {
     if ( data ?$ hostname) {
         # add source to protocol field
         Known::get_name_details(ip, data$hostname)$protocols=set(data$source);
-        # add source to annotation field
-        Known::add_name_annotation(ip, data$hostname, set(data$source));
+        # # add source to annotation field
+        # Known::add_name_annotation(ip, data$hostname, set(data$source));
     }
     if ( data ?$ mac) {
         # add source to protocol field
         Known::get_device_details(ip, data$mac)$protocols=set(data$source);
-        # add source to annotation field
-        Known::add_device_annotation(ip, data$mac, set(data$source));
+        # # add source to annotation field
+        # Known::add_device_annotation(ip, data$mac, set(data$source));
     }
     if ( data ?$ machine_domain) {
         # add source to protocol field
         Known::get_domain_details(ip, data$machine_domain)$protocols=set(data$source);
-        # add source to annotation field
-        Known::add_domain_annotation(ip, data$machine_domain, set(data$source));
+        # # add source to annotation field
+        # Known::add_domain_annotation(ip, data$machine_domain, set(data$source));
     }
     # add new fields to hosts log
     Known::get_host_details(ip)$endpoint = data;
@@ -102,29 +95,30 @@ event connection_state_remove(c: connection) &priority=-5
     local orig = c$id$orig_h;
     local resp = c$id$resp_h;
 
-    local orig_local = Site::is_local_addr(orig);
-    local resp_local = Site::is_local_addr(resp);
+    local orig_local = c$conn?$local_orig;
+    local resp_local = c$conn?$local_resp;
 
-    if (!orig_local && !resp_local) {
+    if ( !orig_local && !resp_local ) {
         return;
     }
 
-    # If the IP is in the list, update the following logs.
-    if (orig_local && orig in hosts_data) {
-        knownEndpoint(orig);
-    }
-    # If the IP is not in the list, add the field to flag it as unknown.
-    if (orig_local && orig !in hosts_data) {
-        unknownEndpoint(orig);
-    }
-
-    # If the IP is in the list, update the following logs.
-    if (resp_local && resp in hosts_data) {
-        knownEndpoint(resp);
-    }
-    # If the IP is not in the list, add the field to flag it as unknown.
-    if (resp_local && resp !in hosts_data) {
-        unknownEndpoint(resp);
+    # If the orig IP is local, check the list, update the following logs.
+    if ( orig_local ) {
+        # If it's in the list, update the fields, else flag it as unknown
+        if ( orig in hosts_data ) {
+            knownEndpoint(orig);
+        } else {
+            unknownEndpoint(orig);
+        }
     }
 
+    # If the resp IP is local, check the list, update the following logs.
+    if ( resp_local ) {
+        # If it's in the list, update the fields, else flag it as unknown
+        if ( resp in hosts_data ) {
+            knownEndpoint(resp);
+        } else {
+            unknownEndpoint(resp);
+        }
+    }
 }
