@@ -38,13 +38,14 @@ event zeek_init() {
     ]);
 }
 
-# grab the source from any record in the table and update unknownSource each time the input file is loaded.
-event Input::end_of_data(name: string, source: string) {
-    for ( _, val in hosts_data ) {
-        unknownSource = val$source;
-        break;
-    }
-}
+# TODO: create a list of all possible sources from the input file, or don't include a source with unknown hosts
+# # grab the source from any record in the table and update unknownSource each time the input file is loaded.
+# event Input::end_of_data(name: string, source: string) {
+#     for ( _, val in hosts_data ) {
+#         unknownSource = val$source;
+#         break;
+#     }
+# }
 
 ## known_hosts
 redef record Known::HostDetails += {
