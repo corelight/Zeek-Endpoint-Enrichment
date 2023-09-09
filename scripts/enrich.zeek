@@ -14,7 +14,7 @@ type Val: record {
     ## The Operating System version of the endpoint host.
     os_version: string &log &optional;
     ## The source of the endpoint information.
-    source: string &log;
+    source: string &log &optional;
     ## The MAC address of the endpoint host.
     mac: string &optional;
     ## The hostname of the vulnerable host.
