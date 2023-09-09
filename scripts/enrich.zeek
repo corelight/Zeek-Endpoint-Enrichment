@@ -88,7 +88,9 @@ function knownEndpoint (ip: addr) {
     Known::get_host_details(ip)$endpoint = data;
 }
 function unknownEndpoint (ip: addr) {
-    local data: Val = [$status = "unknown", $source = unknownSource];
+    # TODO: create a list of all possible sources from the input file, or don't include a source with unknown hosts
+    # local data: Val = [$status = "unknown", $source = unknownSource];
+    local data: Val = [$status = "unknown"];
     Known::get_host_details(ip)$endpoint = data;
 }
 
