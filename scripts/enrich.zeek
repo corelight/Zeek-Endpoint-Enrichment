@@ -11,6 +11,8 @@ type Val: record {
     status: string &log &optional;
     ## The unique identifier, assigned by the source, of the endpoint host.
     host_uid: string &log &optional;
+    ## The customer ID the host belongs to.
+    cid: string &log &optional;
     ## The Operating System version of the endpoint host.
     os_version: string &log &optional;
     ## The source of the endpoint information.
@@ -24,6 +26,18 @@ type Val: record {
     ## The machine domain of the endpoint host.
     machine_domain: string &optional;
 };
+
+type ConnVal: record {
+    ## The status of the endpoint host.
+    status: string &log &optional;
+    ## The unique identifier, assigned by the source, of the endpoint host.
+    host_uid: string &log &optional;
+    ## The customer ID the host belongs to.
+    cid: string &log &optional;
+    ## The source of the endpoint information.
+    source: string &log &optional;
+
+}
 
 global hosts_data: table[addr] of Val = table();
 # # source to use for all unknown IPs
@@ -49,9 +63,15 @@ event zeek_init() {
 #     }
 # }
 
+## conn - move to separate script
+redef record Conn::Info += {
+    orig_endpoint: ConnVal &log &optional;
+    resp_endpoint: ConnVal &log &optional;
+}
+
 ## known_hosts
 redef record Known::HostDetails += {
-  endpoint: Val &log &optional;
+    endpoint: Val &log &optional;
 };
 
 hook Known::add_host_details(h: Known::HostDetails, d: Known::HostDetails){
@@ -114,6 +134,7 @@ event connection_state_remove(c: connection) &priority=-5
         # If it's in the list, update the fields, else flag it as unknown
         if ( orig in hosts_data ) {
             knownEndpoint(orig);
+            c$orig_endpoint = hosts_data[orig]
         } else {
             unknownEndpoint(orig);
         }
@@ -124,6 +145,7 @@ event connection_state_remove(c: connection) &priority=-5
         # If it's in the list, update the fields, else flag it as unknown
         if ( resp in hosts_data ) {
             knownEndpoint(resp);
+            c$resp_endpoint = hosts_data[resp]
         } else {
             unknownEndpoint(resp);
         }
