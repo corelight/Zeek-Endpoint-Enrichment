@@ -63,6 +63,11 @@ event zeek_init() {
 #     }
 # }
 
+export {
+    ## Enables the logging of endpoint details to the conn log.
+    option extra_logging_conn = T;
+}
+
 ## conn - move to separate script
 redef record Conn::Info += {
     orig_endpoint: ConnVal &log &optional;
@@ -134,7 +139,8 @@ event connection_state_remove(c: connection) &priority=-5
         # If it's in the list, update the fields, else flag it as unknown
         if ( orig in hosts_data ) {
             knownEndpoint(orig);
-            c$orig_endpoint = hosts_data[orig]
+            if (extra_logging_conn)
+                c$orig_endpoint = hosts_data[orig];
         } else {
             unknownEndpoint(orig);
         }
@@ -145,7 +151,8 @@ event connection_state_remove(c: connection) &priority=-5
         # If it's in the list, update the fields, else flag it as unknown
         if ( resp in hosts_data ) {
             knownEndpoint(resp);
-            c$resp_endpoint = hosts_data[resp]
+            if (extra_logging_conn)
+                c$resp_endpoint = hosts_data[resp];
         } else {
             unknownEndpoint(resp);
         }
