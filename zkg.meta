@@ -1,5 +1,5 @@
 [package]
-description = v3 This package enriches the Known-Entities by adding information from a vulnerability scanner or endpoint agent.
+description = updated 23Dec20231014 - This package enriches the Known-Entities by adding information from a vulnerability scanner or endpoint agent.
 script_dir = scripts
 
 [input hosts_data.tsv]
