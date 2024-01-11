@@ -10,7 +10,7 @@ type Val: record {
     ## The status of the endpoint host.
     status: string &log &optional;
     ## The unique identifier, assigned by the source, of the endpoint host.
-    host_uid: string &log &optional;
+    uid: string &log &optional;
     ## The customer ID the host belongs to.
     cid: string &log &optional;
     ## The Operating System version of the endpoint host.
@@ -41,61 +41,6 @@ event zeek_init() {
         $mode=Input::REREAD
     ]);
 }
-
-## Enrich Conn.log ##
-export {
-    ## Enables the logging of endpoint details to the conn log.
-    option extra_logging_conn = F;
-}
-
-redef record Conn::Info += {
-    orig_endpoint_status: string &log &optional;
-    orig_endpoint_host_uid: string &log &optional;
-    orig_endpoint_cid: string &log &optional;
-    orig_endpoint_source: string &log &optional;
-    resp_endpoint_status: string &log &optional;
-    resp_endpoint_host_uid: string &log &optional;
-    resp_endpoint_cid: string &log &optional;
-    resp_endpoint_source: string &log &optional;
-};
-
-# priority of -5 is too long for enriching the conn.log,
-# the connection has already been removed from memory
-event connection_state_remove(c: connection)
-{
-    if (extra_logging_conn) {
-        if ( !c$conn?$local_orig && !c$conn?$local_resp ) {
-            return;
-        }
-
-        # If the orig IP is local and in the list, update the conn log.
-        if ( c$conn?$local_orig && c$id$orig_h in hosts_data ) {
-            local orig_data = hosts_data[c$id$orig_h];
-            if ( orig_data ?$ status)
-                c$conn$orig_endpoint_status = orig_data$status;
-            if ( orig_data ?$ host_uid)
-                c$conn$orig_endpoint_host_uid = orig_data$host_uid;
-            if ( orig_data ?$ cid)
-                c$conn$orig_endpoint_cid = orig_data$cid;
-            c$conn$orig_endpoint_source = orig_data$source;
-        }
-
-        # If the resp IP is local and in the list, update the conn log.
-        if ( c$conn?$local_resp && c$id$resp_h in hosts_data ) {
-            local resp_data = hosts_data[c$id$resp_h];
-            if ( resp_data ?$ status)
-                c$conn$resp_endpoint_status = resp_data$status;
-            if ( resp_data ?$ host_uid)
-                c$conn$resp_endpoint_host_uid = resp_data$host_uid;
-            if ( resp_data ?$ cid)
-                c$conn$resp_endpoint_cid = resp_data$cid;
-            c$conn$resp_endpoint_source = resp_data$source;
-        }
-    }
-}
-
-
-
 
 ## Enrich known_hosts ##
 redef record Known::HostDetails += {
