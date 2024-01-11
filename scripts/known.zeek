@@ -49,8 +49,7 @@ function unknownEndpoint (ip: addr) {
 
 # priority of -5 to make sure the Known-entities creates an entry first
 # note: priority of -5, the connection will already be removed from memory
-event connection_state_remove(c: connection) &priority=-5
-{
+event connection_state_remove(c: connection) &priority=-5 {
     if ( !c$conn?$local_orig && !c$conn?$local_resp ) {
         return;
     }

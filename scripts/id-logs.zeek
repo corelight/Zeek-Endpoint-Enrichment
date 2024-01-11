@@ -1,6 +1,11 @@
-##! Add VLAN to all logs with an "id" field.
+module EndpointEnrichment;
 
-module Corelight;
+## Add VLAN to all logs with an "id" field.
+export {
+    ## Enables the logging of endpoint details to the conn log.
+    option extra_logging_all = T;
+    option extra_logging_all_cid = T;
+}
 
 redef record conn_id += {
     orig_ep_status: string &log &optional;
@@ -13,11 +18,34 @@ redef record conn_id += {
     resp_ep_source: string &log &optional;
 };
 
-event new_onnection(c: connection) &priority=4
-	{
-	if ( c?$vlan )
-		c$id$vlan = c$vlan;
+event new_onnection(c: connection) &priority=-1 {
+    if (extra_logging_all) {
+        if ( !c$conn?$local_orig && !c$conn?$local_resp ) {
+            return;
+        }
 
-	if ( c?$inner_vlan )
-		c$id$vlan_inner = c$inner_vlan;
-	}
+        # If the orig IP is local and in the list, update the conn log.
+        if ( c$conn?$local_orig && c$id$orig_h in hosts_data ) {
+            local orig_data = hosts_data[c$id$orig_h];
+            if ( orig_data ?$ status)
+                c$id$orig_ep_status = orig_data$status;
+            if ( orig_data ?$ uid)
+                c$id$orig_ep_uid = orig_data$uid;
+            if ( orig_data ?$ cid && extra_logging_all_cid)
+                c$id$orig_ep_cid = orig_data$cid;
+            c$id$orig_ep_source = orig_data$source;
+        }
+
+        # If the resp IP is local and in the list, update the conn log.
+        if ( c$conn?$local_resp && c$id$resp_h in hosts_data ) {
+            local resp_data = hosts_data[c$id$resp_h];
+            if ( resp_data ?$ status)
+                c$id$resp_ep_status = resp_data$status;
+            if ( resp_data ?$ uid)
+                c$id$resp_ep_uid = resp_data$uid;
+            if ( resp_data ?$ cid && extra_logging_all_cid)
+                c$id$resp_ep_cid = resp_data$cid;
+            c$id$resp_ep_source = resp_data$source;
+        }
+    }
+}
