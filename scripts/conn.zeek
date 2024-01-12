@@ -19,7 +19,7 @@ redef record Conn::Info += {
 };
 
 
-event new_connection(c: connection) &priority=-1 {
+event new_connection(c: connection) {
     if (extra_logging_conn) {
         if ( !c$conn?$local_orig && !c$conn?$local_resp ) {
             return;

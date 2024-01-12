@@ -1,5 +1,5 @@
 [package]
-description = updated 11Jan20241253 - This package enriches multiple logs by adding information from a vulnerability scanner or endpoint agent.
+description = updated 12Jan20241030 - This package enriches multiple logs by adding information from a vulnerability scanner or endpoint agent.
 script_dir = scripts
 
 [input hosts_data.tsv]

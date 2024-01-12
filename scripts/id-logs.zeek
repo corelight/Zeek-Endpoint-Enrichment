@@ -18,7 +18,8 @@ redef record conn_id += {
     resp_ep_source: string &log &optional;
 };
 
-event new_onnection(c: connection) &priority=-1 {
+
+event new_connection(c: connection) {
     if (extra_logging_all) {
         if ( !c$conn?$local_orig && !c$conn?$local_resp ) {
             return;
