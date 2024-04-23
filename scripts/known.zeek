@@ -55,13 +55,15 @@ function unknownEndpoint (kep: Known::Endpoint) {
 # note: priority of -5, the connection will already be removed from memory
 event connection_state_remove(c: connection) &priority=-5 {
     if (extra_logging_known) {
+        local ep: Known::Endpoint;
+
         if ( !c$conn?$local_orig && !c$conn?$local_resp ) {
             return;
         }
 
         # If the orig IP is local, check the list, update the following logs.
         if ( c$conn?$local_orig ) {
-            local ep = Common::get_endpoint(c, c$id$orig_h);
+            ep = Common::get_endpoint(c, c$id$orig_h);
             # If it's in the list, update the fields, else flag it as unknown
             if ( c$id$orig_h in hosts_data ) {
                 knownEndpoint(ep);
