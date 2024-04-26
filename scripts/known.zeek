@@ -1,6 +1,7 @@
 module EndpointEnrichment;
 
 ## Enrich known_hosts ##
+# VLAN tag support version
 export {
     ## Enables the logging of endpoint details to the Known-entities.
     option extra_logging_known = T;
