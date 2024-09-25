@@ -50,3 +50,55 @@ event new_connection(c: connection) {
         }
     }
 }
+
+event connection_flipped(c: connection) {
+    if (extra_logging_conn) {
+        if ( !c$conn?$local_orig && !c$conn?$local_resp ) {
+            return;
+        }
+
+        # Clear old fields set before the connection flipped.
+        if ( c$conn ?$ orig_ep_status)
+            c$conn$orig_ep_status = "";
+        if ( c$conn ?$ orig_ep_uid)
+            c$conn$orig_ep_uid = "";
+        if ( c$conn ?$ orig_ep_cid)
+            c$conn$orig_ep_cid = "";
+        if ( c$conn ?$ orig_ep_source)
+            c$conn$orig_ep_source = "";
+        if ( c$conn ?$ resp_ep_status)
+            c$conn$resp_ep_status = "";
+        if ( c$conn ?$ resp_ep_uid)
+            c$conn$resp_ep_uid = "";
+        if ( c$conn ?$ resp_ep_cid)
+            c$conn$resp_ep_cid = "";
+        if ( c$conn ?$ resp_ep_source)
+            c$conn$resp_ep_source = "";
+
+        # Once the old fields are erased, run through the enrichment again.
+
+        # If the orig IP is local and in the list, update the conn log.
+        if ( c$conn?$local_orig && c$id$orig_h in hosts_data ) {
+            local orig_data = hosts_data[c$id$orig_h];
+            if ( orig_data ?$ status)
+                c$conn$orig_ep_status = orig_data$status;
+            if ( orig_data ?$ uid)
+                c$conn$orig_ep_uid = orig_data$uid;
+            if ( orig_data ?$ cid && extra_logging_conn_cid)
+                c$conn$orig_ep_cid = orig_data$cid;
+            c$conn$orig_ep_source = orig_data$source;
+        }
+
+        # If the resp IP is local and in the list, update the conn log.
+        if ( c$conn?$local_resp && c$id$resp_h in hosts_data ) {
+            local resp_data = hosts_data[c$id$resp_h];
+            if ( resp_data ?$ status)
+                c$conn$resp_ep_status = resp_data$status;
+            if ( resp_data ?$ uid)
+                c$conn$resp_ep_uid = resp_data$uid;
+            if ( resp_data ?$ cid && extra_logging_conn_cid)
+                c$conn$resp_ep_cid = resp_data$cid;
+            c$conn$resp_ep_source = resp_data$source;
+        }
+    }
+}
