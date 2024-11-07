@@ -3,18 +3,21 @@ module EndpointEnrichment;
 ## Add VLAN to all logs with an "id" field.
 export {
     ## Enables the logging of endpoint details to the conn log.
-    option extra_logging_all = F;
-    option extra_logging_all_cid = F;
+    option extra_logging_all = T;
+    option extra_logging_all_cid = T;
+    option extra_logging_all_hostname = T;
 }
 
 redef record conn_id += {
     orig_ep_status: string &log &optional;
     orig_ep_uid: string &log &optional;
     orig_ep_cid: string &log &optional;
+    orig_ep_name: string &log &optional;
     orig_ep_source: string &log &optional;
     resp_ep_status: string &log &optional;
     resp_ep_uid: string &log &optional;
     resp_ep_cid: string &log &optional;
+    resp_ep_name: string &log &optional;
     resp_ep_source: string &log &optional;
 };
 
@@ -32,6 +35,8 @@ event new_connection(c: connection) {
                 c$id$orig_ep_status = orig_data$status;
             if ( orig_data ?$ uid)
                 c$id$orig_ep_uid = orig_data$uid;
+            if ( orig_data ?$ hostname && extra_logging_all_hostname)
+                c$id$orig_ep_name = orig_data$hostname;
             if ( orig_data ?$ cid && extra_logging_all_cid)
                 c$id$orig_ep_cid = orig_data$cid;
             c$id$orig_ep_source = orig_data$source;
@@ -44,6 +49,8 @@ event new_connection(c: connection) {
                 c$id$resp_ep_status = resp_data$status;
             if ( resp_data ?$ uid)
                 c$id$resp_ep_uid = resp_data$uid;
+            if ( resp_data ?$ hostname && extra_logging_all_hostname)
+                c$id$resp_ep_name = resp_data$hostname;
             if ( resp_data ?$ cid && extra_logging_all_cid)
                 c$id$resp_ep_cid = resp_data$cid;
             c$id$resp_ep_source = resp_data$source;
@@ -52,7 +59,7 @@ event new_connection(c: connection) {
 }
 
 event connection_flipped(c: connection) {
-    if (extra_logging_all) {
+    if ( extra_logging_all  && c?$conn ) {
         if ( !c$conn?$local_orig && !c$conn?$local_resp ) {
             return;
         }
@@ -65,6 +72,8 @@ event connection_flipped(c: connection) {
             c$id$orig_ep_cid = "";
         if ( c$id ?$ orig_ep_source)
             c$id$orig_ep_source = "";
+        if ( c$id ?$ orig_ep_name)
+            c$id$orig_ep_name = "";
         if ( c$id ?$ resp_ep_status)
             c$id$resp_ep_status = "";
         if ( c$id ?$ resp_ep_uid)
@@ -73,6 +82,8 @@ event connection_flipped(c: connection) {
             c$id$resp_ep_cid = "";
         if ( c$id ?$ resp_ep_source)
             c$id$resp_ep_source = "";
+        if ( c$id ?$ resp_ep_name)
+            c$id$resp_ep_name = "";
 
         # Once the old fields are erased, run through the enrichment again.
 
@@ -83,6 +94,8 @@ event connection_flipped(c: connection) {
                 c$id$orig_ep_status = orig_data$status;
             if ( orig_data ?$ uid)
                 c$id$orig_ep_uid = orig_data$uid;
+            if ( orig_data ?$ hostname && extra_logging_all_hostname)
+                c$id$orig_ep_name = orig_data$hostname;
             if ( orig_data ?$ cid && extra_logging_all_cid)
                 c$id$orig_ep_cid = orig_data$cid;
             c$id$orig_ep_source = orig_data$source;
@@ -95,6 +108,8 @@ event connection_flipped(c: connection) {
                 c$id$resp_ep_status = resp_data$status;
             if ( resp_data ?$ uid)
                 c$id$resp_ep_uid = resp_data$uid;
+            if ( resp_data ?$ hostname && extra_logging_all_hostname)
+                c$id$resp_ep_name = resp_data$hostname;
             if ( resp_data ?$ cid && extra_logging_all_cid)
                 c$id$resp_ep_cid = resp_data$cid;
             c$id$resp_ep_source = resp_data$source;

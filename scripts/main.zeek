@@ -21,15 +21,14 @@ type Val: record {
     criticality: string &log &optional;
     ## The MAC address of the endpoint host.
     mac: string &optional;
-    ## The hostname of the vulnerable host.
-    hostname: string &optional;
+    ## The hostname of the endpoint host.
+    hostname: string &log &optional;
     ## The machine domain of the endpoint host.
     machine_domain: string &optional;
 };
 
 global hosts_data: table[addr] of Val = table();
-# # source to use for all unknown IPs
-# global unknownSource: string;
+
 
 event zeek_init() {
     Input::add_table([
