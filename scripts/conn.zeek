@@ -3,9 +3,9 @@ module EndpointEnrichment;
 ## Enrich Conn.log ##
 export {
     ## Enables the logging of endpoint details to the conn log.
-    option extra_logging_conn = T;
-    option extra_logging_conn_cid = T;
-    option extra_logging_conn_hostname = T;
+    option extra_logging_conn = F;
+    option extra_logging_conn_cid = F;
+    option extra_logging_conn_hostname = F;
 }
 
 redef record Conn::Info += {
