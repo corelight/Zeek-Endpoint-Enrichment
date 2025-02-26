@@ -6,6 +6,8 @@ export {
     option extra_logging_all = F;
     option extra_logging_all_cid = F;
     option extra_logging_all_hostname = F;
+    option extra_logging_all_type = F;
+    option extra_logging_all_ostype = F;
 }
 
 redef record conn_id += {
@@ -13,11 +15,15 @@ redef record conn_id += {
     orig_ep_uid: string &log &optional;
     orig_ep_cid: string &log &optional;
     orig_ep_name: string &log &optional;
+    orig_ep_ostype: string &log &optional;
+    orig_ep_type: string &log &optional;
     orig_ep_source: string &log &optional;
     resp_ep_status: string &log &optional;
     resp_ep_uid: string &log &optional;
     resp_ep_cid: string &log &optional;
     resp_ep_name: string &log &optional;
+    resp_ep_ostype: string &log &optional;
+    resp_ep_type: string &log &optional;
     resp_ep_source: string &log &optional;
 };
 
@@ -37,6 +43,10 @@ event new_connection(c: connection) {
                 c$id$orig_ep_uid = orig_data$uid;
             if ( orig_data ?$ hostname && extra_logging_all_hostname)
                 c$id$orig_ep_name = orig_data$hostname;
+            if ( orig_data ?$ os_type && extra_logging_all_ostype)
+                c$id$orig_ep_ostype = orig_data$os_type;
+            if ( orig_data ?$ machine_type && extra_logging_all_type)
+                c$id$orig_ep_type = orig_data$machine_type;
             if ( orig_data ?$ cid && extra_logging_all_cid)
                 c$id$orig_ep_cid = orig_data$cid;
             c$id$orig_ep_source = orig_data$source;
@@ -51,6 +61,10 @@ event new_connection(c: connection) {
                 c$id$resp_ep_uid = resp_data$uid;
             if ( resp_data ?$ hostname && extra_logging_all_hostname)
                 c$id$resp_ep_name = resp_data$hostname;
+            if ( resp_data ?$ os_type && extra_logging_all_ostype)
+                c$id$resp_ep_ostype = resp_data$os_type;
+            if ( resp_data ?$ machine_type && extra_logging_all_type)
+                c$id$resp_ep_type = resp_data$machine_type;
             if ( resp_data ?$ cid && extra_logging_all_cid)
                 c$id$resp_ep_cid = resp_data$cid;
             c$id$resp_ep_source = resp_data$source;
@@ -68,6 +82,10 @@ event connection_flipped(c: connection) {
             c$id$orig_ep_status = "";
         if ( c$id ?$ orig_ep_uid)
             c$id$orig_ep_uid = "";
+        if ( c$id ?$ orig_ep_ostype)
+            c$id$orig_ep_ostype = "";
+        if ( c$id ?$ orig_ep_type)
+            c$id$orig_ep_type = "";
         if ( c$id ?$ orig_ep_cid)
             c$id$orig_ep_cid = "";
         if ( c$id ?$ orig_ep_source)
@@ -78,6 +96,10 @@ event connection_flipped(c: connection) {
             c$id$resp_ep_status = "";
         if ( c$id ?$ resp_ep_uid)
             c$id$resp_ep_uid = "";
+        if ( c$id ?$ resp_ep_ostype)
+            c$id$resp_ep_ostype = "";
+        if ( c$id ?$ resp_ep_type)
+            c$id$resp_ep_type = "";
         if ( c$id ?$ resp_ep_cid)
             c$id$resp_ep_cid = "";
         if ( c$id ?$ resp_ep_source)
@@ -96,6 +118,10 @@ event connection_flipped(c: connection) {
                 c$id$orig_ep_uid = orig_data$uid;
             if ( orig_data ?$ hostname && extra_logging_all_hostname)
                 c$id$orig_ep_name = orig_data$hostname;
+            if ( orig_data ?$ os_type && extra_logging_all_ostype)
+                c$id$orig_ep_ostype = orig_data$os_type;
+            if ( orig_data ?$ machine_type && extra_logging_all_type)
+                c$id$orig_ep_type = orig_data$machine_type;
             if ( orig_data ?$ cid && extra_logging_all_cid)
                 c$id$orig_ep_cid = orig_data$cid;
             c$id$orig_ep_source = orig_data$source;
@@ -110,6 +136,10 @@ event connection_flipped(c: connection) {
                 c$id$resp_ep_uid = resp_data$uid;
             if ( resp_data ?$ hostname && extra_logging_all_hostname)
                 c$id$resp_ep_name = resp_data$hostname;
+            if ( resp_data ?$ os_type && extra_logging_all_ostype)
+                c$id$resp_ep_ostype = resp_data$os_type;
+            if ( resp_data ?$ machine_type && extra_logging_all_type)
+                c$id$resp_ep_type = resp_data$machine_type;
             if ( resp_data ?$ cid && extra_logging_all_cid)
                 c$id$resp_ep_cid = resp_data$cid;
             c$id$resp_ep_source = resp_data$source;

@@ -15,6 +15,8 @@ type Val: record {
     cid: string &log &optional;
     ## The Operating System version of the endpoint host.
     os_version: string &log &optional;
+    ## The Operation System type of the endpoint host.
+    os_type: string &log &optional;
     ## The source of the endpoint information.
     source: string &log &optional;
     ## The criticality of the endpoint host.
@@ -25,6 +27,8 @@ type Val: record {
     hostname: string &log &optional;
     ## The machine domain of the endpoint host.
     machine_domain: string &optional;
+    ## The machine type of the endpoint host.
+    machine_type: string &log &optional;
 };
 
 global hosts_data: table[addr] of Val = table();
