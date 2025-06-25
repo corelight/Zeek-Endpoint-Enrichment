@@ -3,7 +3,7 @@
 @load ./conn.zeek
 @load ./id-logs.zeek
 
-# Only load known.zeek if Known Entities package is enabled..
+# Only load known.zeek if Known Entities package is enabled.
 @ifdef (Known::tracking)
   #Load new version if Known Entities with VLAN support is enabled.
   @ifdef (Known::Endpoint)
