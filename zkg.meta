@@ -1,7 +1,8 @@
 [package]
+corelight_name = Endpoint Enrichment
 description = v4.0 - This package enriches multiple logs by adding information from a vulnerability scanner or endpoint agent.
 script_dir = scripts
-version=4.0.0
+test_command = make test
 
 [input hosts_data.tsv]
 summary=List of all known hosts address.
