@@ -37,6 +37,18 @@ global hosts_data: table[addr] of Val = table();
 
 event zeek_init()
         {
+        if ( reading_traces() )
+                suspend_processing();
+
         Input::add_table([ $source="hosts_data.tsv", $name="hosts_data", $idx=Idx,
             $val=Val, $destination=hosts_data, $mode=Input::REREAD ]);
+        }
+
+event Input::end_of_data(name: string, source: string)
+        {
+        if ( name != "hosts_data" )
+                return;
+
+        if ( reading_traces() )
+                continue_processing();
         }
