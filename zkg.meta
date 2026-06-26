@@ -1,5 +1,5 @@
 [package]
-description = v4.1 - This package enriches multiple logs by adding information from a vulnerability scanner or endpoint agent.
+description = v4.1.2 - This package enriches multiple logs by adding information from a vulnerability scanner or endpoint agent.
 script_dir = scripts
 version=4.1
 
