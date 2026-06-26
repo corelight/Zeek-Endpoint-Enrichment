@@ -23,7 +23,9 @@ hook Known::update_host_info(en: Known::HostInfo, d: Known::HostData)
         local data = hosts_data[h];
         local ep = Known::addr_to_endpoint(h);
         local ts = d$ts;
-        local source = data$source;
+        local source = "";
+        if ( data?$source )
+                source = data$source;
         local anno = source + "/" + data$status;
 
         if ( data?$hostname )
