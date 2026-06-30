@@ -48,8 +48,8 @@ event new_connection(c: connection)
                         id$orig_ep_type = orig_data$machine_type;
                 if ( orig_data?$cid )
                         id$orig_ep_cid = orig_data$cid;
-
-                id$orig_ep_source = orig_data$source;
+                if ( orig_data?$source )
+                        id$orig_ep_source = orig_data$source;
                 }
 
         # If the resp IP is local and in the list, update the conn log.
@@ -69,8 +69,8 @@ event new_connection(c: connection)
                         id$resp_ep_type = resp_data$machine_type;
                 if ( resp_data?$cid )
                         id$resp_ep_cid = resp_data$cid;
-
-                id$resp_ep_source = resp_data$source;
+                if ( resp_data?$source )
+                        id$resp_ep_source = resp_data$source;
                 }
         }
 
@@ -134,8 +134,8 @@ event connection_flipped(c: connection)
                                 id$orig_ep_type = orig_data$machine_type;
                         if ( orig_data?$cid )
                                 id$orig_ep_cid = orig_data$cid;
-
-                        id$orig_ep_source = orig_data$source;
+                        if ( orig_data?$source )
+                                id$orig_ep_source = orig_data$source;
                         }
 
                 # If the resp IP is local and in the list, update the conn log.
@@ -155,8 +155,8 @@ event connection_flipped(c: connection)
                                 id$resp_ep_type = resp_data$machine_type;
                         if ( resp_data?$cid )
                                 id$resp_ep_cid = resp_data$cid;
-
-                        id$resp_ep_source = resp_data$source;
+                        if ( resp_data?$source )
+                                id$resp_ep_source = resp_data$source;
                         }
                 }
         }
