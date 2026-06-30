@@ -23,8 +23,16 @@ hook Known::update_host_info(en: Known::HostInfo, d: Known::HostData)
         local data = hosts_data[h];
         local ep = Known::addr_to_endpoint(h);
         local ts = d$ts;
-        local source = data$source;
-        local anno = source + "/" + data$status;
+
+        # source is an optional field, however "annotation" and "protocols" need the source.
+        local source = "Endpoint-Enrichment";
+        if ( data?$source )
+                source = data$source;
+
+        # "status" is an optional field, however "annotation" needs the status.
+        local anno = source + "/status not included";
+        if ( data?$status )
+                anno = source + "/" + data$status;
 
         if ( data?$hostname )
                 {
