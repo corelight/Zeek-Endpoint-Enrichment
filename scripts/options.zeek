@@ -6,5 +6,5 @@ export {
         ## Enables the logging of endpoint details to the conn log.
         option extra_logging_conn = F;
         ## Enables the logging of endpoint details to the Known-entities.
-        option extra_logging_known = F;
+        option extra_logging_known = T;
 }
